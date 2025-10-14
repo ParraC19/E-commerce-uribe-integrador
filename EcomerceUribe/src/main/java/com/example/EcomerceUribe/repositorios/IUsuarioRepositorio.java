@@ -10,13 +10,7 @@ import java.util.Optional;
 @Repository
 public interface IUsuarioRepositorio extends JpaRepository<Usuario,Integer> {
 
-    //GUARDAR
-    //EDITAR POR ID
-    //ELIMINAR POR ID
-    //BUSCAR POR ID
-    //BUSCAR TODOS LOS REGISTROS
 
-    //SECCION DE CONSULTAS O QUERIES PERSONALIZADAS
     List<Usuario> findByNombres(String nombres);
     Optional<Usuario> findByCorreo(String correo);
 
