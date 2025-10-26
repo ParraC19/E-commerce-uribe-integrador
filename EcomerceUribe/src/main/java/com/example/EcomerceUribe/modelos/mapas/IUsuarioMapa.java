@@ -1,7 +1,7 @@
 package com.example.EcomerceUribe.modelos.mapas;
 
-import com.example.EcomerceUribe.modelos.DTOS.UsuarioEspecialDTO;
-import com.example.EcomerceUribe.modelos.DTOS.UsuarioGenericoDTO;
+import com.example.EcomerceUribe.modelos.DTOS.UsuarioDTO.UsuarioEspecialDTO;
+import com.example.EcomerceUribe.modelos.DTOS.UsuarioDTO.UsuarioGenericoDTO;
 import com.example.EcomerceUribe.modelos.Usuario;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

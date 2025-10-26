@@ -15,7 +15,7 @@ public class Cliente {
     @Column(name="direccion",nullable = false, unique = false, length = 250)
     private String direccion;
 
-    @Column(name="calificacion",nullable = false, unique = false, precision = 10, scale = 2)
+    @Column(name="calificacion",nullable = false, unique = false)
     private Double calificacion;
 
     @Column(name="referencia_pago",nullable = false, unique = true, length = 20)

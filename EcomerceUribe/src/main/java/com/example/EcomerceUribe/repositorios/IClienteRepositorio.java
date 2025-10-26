@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface IClienteRepositorio extends JpaRepository<Cliente, Integer> {
 
     List<Cliente> findByUsuario(Usuario usuario);
-    Optional<Cliente> findByRefPago(String referenciaPago);
+    Optional<Cliente> findByReferenciaPago(String referenciaPago);
     List<Cliente> findByDepartamento(Departamentos departamento);
     Optional<Cliente> findByCiudad(String ciudad);
 

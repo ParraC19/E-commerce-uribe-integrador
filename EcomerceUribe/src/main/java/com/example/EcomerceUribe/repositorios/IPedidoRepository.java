@@ -9,7 +9,7 @@ import java.util.List;
 
 
 @Repository
-public interface IPedidoRepository extends JpaRepository {
+public interface IPedidoRepository extends JpaRepository<Pedido, Integer> {
 
     List<Pedido> findByFechaCreacion (LocalDate fechaCreacion);
     List<Pedido> findByFechaEntrega (LocalDate fechaEntrega);

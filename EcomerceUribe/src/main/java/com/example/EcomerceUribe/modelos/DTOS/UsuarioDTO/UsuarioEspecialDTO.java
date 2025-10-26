@@ -1,27 +1,29 @@
-package com.example.EcomerceUribe.modelos.DTOS;
+package com.example.EcomerceUribe.modelos.DTOS.UsuarioDTO;
 
 import com.example.EcomerceUribe.ayudas.EstadosUsuario;
 
 import java.time.LocalDate;
 
-public class UsuarioGenericoDTO {
+public class UsuarioEspecialDTO {
 
     private String nombres;
     private String correo;
     private EstadosUsuario estado;
     private LocalDate fechaNacimiento;
     private String documento;
+    private String contraseña;
 
-    public UsuarioGenericoDTO() {
+    public UsuarioEspecialDTO() {
     }
 
-    public UsuarioGenericoDTO(String nombres, String correo, EstadosUsuario estado,
-                              LocalDate fechaNacimiento, String documento) {
+    public UsuarioEspecialDTO(String nombres, String correo, EstadosUsuario estado,
+                              LocalDate fechaNacimiento, String documento, String contraseña) {
         this.nombres = nombres;
         this.correo = correo;
         this.estado = estado;
         this.fechaNacimiento = fechaNacimiento;
         this.documento = documento;
+        this.contraseña = contraseña;
     }
 
     public String getNombres() {
@@ -62,5 +64,13 @@ public class UsuarioGenericoDTO {
 
     public void setDocumento(String documento) {
         this.documento = documento;
+    }
+
+    public String getContraseña() {
+        return contraseña;
+    }
+
+    public void setContraseña(String contraseña) {
+        this.contraseña = contraseña;
     }
 }

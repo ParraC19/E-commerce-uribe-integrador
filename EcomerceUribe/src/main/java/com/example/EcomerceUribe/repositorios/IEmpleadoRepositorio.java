@@ -13,6 +13,7 @@ import java.util.Optional;
 @Repository
 public interface IEmpleadoRepositorio extends JpaRepository<Empleado, Integer> {
     List<Empleado> findByCargo(Cargos cargo);
-    Optional<Empleado> findeBtUsuario(Usuario usuario);
-    List<Empleado> findbySede (Sedes sede);
+    Optional<Empleado> findByUsuario(Usuario usuario);
+
+    List<Empleado> findBySede(Sedes sede);
 }

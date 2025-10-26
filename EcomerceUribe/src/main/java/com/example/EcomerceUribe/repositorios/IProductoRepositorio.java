@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface IProductoRepositorio extends JpaRepository {
+public interface IProductoRepositorio extends JpaRepository<Producto, Integer> {
 
     List<Producto> findByNombre(String nombre);
     Optional<Producto> findByCategoria(Categorias categoria);
     List<Producto> findByMarca(String marca);
-    Optional<Producto> findByDescuento(Boolean aplicaDescuento);
+    Optional<Producto> findByAplicaDescuento(Boolean aplicaDescuento);
 
 }
