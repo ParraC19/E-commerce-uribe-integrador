@@ -9,6 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 public class PedidoServicio {
 
@@ -35,6 +38,77 @@ public class PedidoServicio {
 
         return this.iPedidoMapa.pedidoEspecialToDTO(pedidoGuardado);
 
+    }
+
+    //Buscar todos los pedidos (Lista)
+    public List<PedidoEspecialDTO> buscarTodosPedidos() {
+        List<Pedido> listaDePedidosConsultados = this.iPedidoRepository.findAll();
+        return this.iPedidoMapa.listaPedidoEspecialToDTO(listaDePedidosConsultados);
+    }
+
+    //Buscar un pedido por el ID
+    public PedidoEspecialDTO buscarPedidoEspecialId(Integer id) {
+        Optional<Pedido> pedidoBuscado = this.iPedidoRepository.findById(id);
+        if (!pedidoBuscado.isPresent()) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "No se encontro ningun pedido con el id " + id + " suministrado"
+            );
+        }
+        Pedido pedidoEncontrado = pedidoBuscado.get();
+        return this.iPedidoMapa.pedidoEspecialToDTO(pedidoEncontrado);
+    }
+
+    //eliminar un pedido
+    public void eliminarPedido(Integer id) {
+        Optional<Pedido> pedidoQueEstoyBuscando = this.iPedidoRepository.findById(id);
+        if (!pedidoQueEstoyBuscando.isPresent()) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "No se encontro ningun pedido con el id " + id + " suministrado"
+            );
+        }
+        Pedido pedidoEncontrado = pedidoQueEstoyBuscando.get();
+        try {
+            this.iPedidoRepository.delete(pedidoEncontrado);
+        } catch (Exception error) {
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "No se pudo eliminar el pedido, " + error.getMessage()
+            );
+        }
+    }
+
+    // Actualizar un pedido
+    public PedidoEspecialDTO actualizarPedido(Integer id, Pedido datosPedido) {
+        Optional<Pedido> pedidoBuscado = this.iPedidoRepository.findById(id);
+        if (!pedidoBuscado.isPresent()) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "No se encontró ningún pedido con el id " + id + " suministrado"
+            );
+        }
+
+        Pedido pedidoExistente = pedidoBuscado.get();
+
+        // Validaciones opcionales
+        if (datosPedido.getFechaEntrega() == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "La fecha de entrega es obligatoria"
+            );
+        }
+
+        // Actualizamos solo los campos permitidos
+        pedidoExistente.setFechaEntrega(datosPedido.getFechaEntrega());
+        pedidoExistente.setMontoTotal(datosPedido.getMontoTotal());
+        pedidoExistente.setCostoEnvio(datosPedido.getCostoEnvio());
+
+        // Guardamos los cambios
+        Pedido pedidoActualizado = this.iPedidoRepository.save(pedidoExistente);
+
+        // Retornamos el DTO actualizado
+        return this.iPedidoMapa.pedidoEspecialToDTO(pedidoActualizado);
     }
 
 }

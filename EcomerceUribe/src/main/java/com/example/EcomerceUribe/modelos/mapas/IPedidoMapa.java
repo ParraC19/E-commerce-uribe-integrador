@@ -15,7 +15,7 @@ public interface IPedidoMapa {
     @Mapping(source = "fechaCreacion", target = "fechaCreacion")
     PedidoGenericoDTO pedidoGenericoToDTO(Pedido pedido);
 
-    List<PedidoGenericoDTO> pedidoGenericoToDTO(List<Pedido> pedido);
+    List<PedidoGenericoDTO> listaPedidoGenericoToDTO(List<Pedido> pedido);
 
     @Mapping(source = "montoTotal", target = "montoTotal")
     @Mapping(source = "fechaCreacion", target = "fechaCreacion")
@@ -23,7 +23,7 @@ public interface IPedidoMapa {
     @Mapping(source = "costoEnvio", target = "costoEnvio")
     PedidoEspecialDTO pedidoEspecialToDTO(Pedido pedido);
 
-    List<PedidoEspecialDTO> pedidoEspecialToDTO(List<Pedido> pedido);
+    List<PedidoEspecialDTO> listaPedidoEspecialToDTO(List<Pedido> listaProducto);
 
 
 }

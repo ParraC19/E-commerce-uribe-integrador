@@ -18,7 +18,7 @@ public interface IProductoMapa {
     @Mapping(source = "precioUnitario", target = "precioUnitario")
     @Mapping(source = "marca", target = "marca")
     ProductoGenericoDTO productoGenericoToDTO(Producto producto);
-    List<Producto> listaProductoGenericoToDTO(List<Producto> listaProducto);
+    List<Producto> listaProductoGenericoToDTO(List<Producto> producto);
 
     @Mapping(source = "nombre", target = "nombre")
     @Mapping(source = "descripcion", target = "descripcion")
@@ -28,6 +28,6 @@ public interface IProductoMapa {
     @Mapping(source = "marca", target = "marca")
     @Mapping(source = "aplicaDescuento", target = "aplicaDescuento")
     ProductoEspecialDTO productoEspecialToDTO(Producto producto);
-    List<Producto> listaProductoEspecialToDTO(List<Producto> listaProducto);
+    List<ProductoEspecialDTO> listaProductoEspecialToDTO(List<Producto> listaProducto);
 
 }
