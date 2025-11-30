@@ -16,10 +16,10 @@ import java.util.Optional;
 public class ProductoServicio {
 
     @Autowired
-    private IProductoRepositorio productoRepositorio;
+    private IProductoRepositorio iProductoRepositorio;
 
     @Autowired
-    private IProductoMapa productoMapa;
+    private IProductoMapa iProductoMapa;
 
     public ProductoEspecialDTO guardarProducto(Producto datosProducto){
 
@@ -29,26 +29,24 @@ public class ProductoServicio {
             );
         }
 
-        Producto productoGuardado = this.productoRepositorio.save(datosProducto);
+        Producto productoGuardado = this.iProductoRepositorio.save(datosProducto);
         if (productoGuardado == null){
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,"Error al guardar el producto"
             );
         }
 
-        return this.productoMapa.productoEspecialToDTO(productoGuardado);
+        return this.iProductoMapa.productoEspecialToDTO(productoGuardado);
 
     }
 
-    //Buscar todos los productos (Lista)
     public List<ProductoEspecialDTO> buscarTodosProductos(){
-        List<Producto> productosConsultados=this.productoRepositorio.findAll();
-        return this.productoMapa.listaProductoEspecialToDTO(productosConsultados);
+        List<Producto> productosConsultados=this.iProductoRepositorio.findAll();
+        return this.iProductoMapa.listaProductoEspecialToDTO(productosConsultados);
     }
 
-    //Buscar un prodcuto por el ID
     public ProductoEspecialDTO buscarProductoEspecialId(Integer id){
-        Optional<Producto> productoBuscado=this.productoRepositorio.findById(id);
+        Optional<Producto> productoBuscado=this.iProductoRepositorio.findById(id);
         if(!productoBuscado.isPresent()){
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
@@ -56,12 +54,11 @@ public class ProductoServicio {
             );
         }
         Producto productoEncontrado = productoBuscado.get();
-        return this.productoMapa.productoEspecialToDTO(productoEncontrado);
+        return this.iProductoMapa.productoEspecialToDTO(productoEncontrado);
     }
 
-    //eliminar un producto
     public void eliminarProducto(Integer id){
-        Optional<Producto> productoBuscado=this.productoRepositorio.findById(id);
+        Optional<Producto> productoBuscado=this.iProductoRepositorio.findById(id);
         if(!productoBuscado.isPresent()){
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
@@ -70,7 +67,7 @@ public class ProductoServicio {
         }
         Producto productoEncontrado = productoBuscado.get();
         try{
-            this.productoRepositorio.delete(productoEncontrado);
+            this.iProductoRepositorio.delete(productoEncontrado);
         }catch(Exception error){
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR,
@@ -79,9 +76,8 @@ public class ProductoServicio {
         }
     }
 
-    //Actualizar producto (precio y aplicaDescuento)
     public ProductoEspecialDTO actualizarProducto(Integer id, Producto datosProducto) {
-        Optional<Producto> productoBuscado = this.productoRepositorio.findById(id);
+        Optional<Producto> productoBuscado = this.iProductoRepositorio.findById(id);
         if (!productoBuscado.isPresent()) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
@@ -91,23 +87,19 @@ public class ProductoServicio {
 
         Producto productoExistente = productoBuscado.get();
 
-        //actualizar precio
-        if (datosProducto.getPrecioUnitario() != null && datosProducto.getPrecioUnitario() > 0) {
-            productoExistente.setPrecioUnitario(datosProducto.getPrecioUnitario());
-        }
-
-        //actualizar si aplica descuento
+        productoExistente.setPrecioUnitario(datosProducto.getPrecioUnitario());
         productoExistente.setAplicaDescuento(datosProducto.getAplicaDescuento());
 
-        try {
-            Producto productoActualizado = this.productoRepositorio.save(productoExistente);
-            return this.productoMapa.productoEspecialToDTO(productoActualizado);
-        } catch (Exception e) {
+
+            Producto productoActualizado = this.iProductoRepositorio.save(productoExistente);
+
+        if (productoActualizado == null) {
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Error al actualizar el producto: " + e.getMessage()
+                    "Error al actualizar el producto: "
             );
         }
+        return this.iProductoMapa.productoEspecialToDTO(productoActualizado);
     }
 
 }

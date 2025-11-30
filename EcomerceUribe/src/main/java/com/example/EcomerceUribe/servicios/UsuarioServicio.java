@@ -17,14 +17,14 @@ import java.util.Optional;
 public class UsuarioServicio {
 
     @Autowired
-    private IUsuarioRepositorio usuarioRepositorio;
+    private IUsuarioRepositorio iUsuarioRepositorio;
 
     @Autowired
     private IUsuarioMapa iUsuarioMapa;
 
     public UsuarioEspecialDTO guardarUsuarioEspecial(Usuario datosUsuario) {
 
-        if (this.usuarioRepositorio.findByCorreo(datosUsuario.getCorreo()).isPresent()) {
+        if (this.iUsuarioRepositorio.findByCorreo(datosUsuario.getCorreo()).isPresent()) {
             throw new ResponseStatusException(
                     HttpStatus.CONFLICT, "Ya existe un usuario con el correo ingresado"
             );
@@ -42,43 +42,43 @@ public class UsuarioServicio {
             );
         }
 
-        Usuario usuarioGuardado = this.usuarioRepositorio.save(datosUsuario);
+        Usuario usuarioGuardado = this.iUsuarioRepositorio.save(datosUsuario);
         if (usuarioGuardado == null) {
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR, "Error al guardar el usuario"
             );
         }
 
-        return this.iUsuarioMapa.convertir_usuario_a_usuarioespecialdto(usuarioGuardado);
+        return this.iUsuarioMapa.usuarioEspecialToDTO(usuarioGuardado);
     }
 
     public List<UsuarioGenericoDTO> buscarTodosUsuarios() {
 
-        List<Usuario> listadConsultados = this.usuarioRepositorio.findAll();
+        List<Usuario> listadConsultados = this.iUsuarioRepositorio.findAll();
 
-        return this.iUsuarioMapa.convertir_lista_a_listadtogenerico(listadConsultados);
+        return this.iUsuarioMapa.listaUsuarioGenericoToDTO(listadConsultados);
     }
 
     ;
 
     public UsuarioGenericoDTO buscarUsuarioId(Integer id) {
-        Optional<Usuario> usuarioBuscado = this.usuarioRepositorio.findById(id);
+        Optional<Usuario> usuarioBuscado = this.iUsuarioRepositorio.findById(id);
 
         if (!usuarioBuscado.isPresent()) {
             throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "No se encontro el usuario buscado por el id:" + id + "suministrado"
+                    HttpStatus.NOT_FOUND,
+                    "No se encontro el usuario buscado por el id:" + id + "suministrado"
             );
         }
 
         Usuario usuarioEncontrado = usuarioBuscado.get();
-        return this.iUsuarioMapa.convertir_usuario_a_usuariogenericodto(usuarioEncontrado);
+        return this.iUsuarioMapa.usuarioGenericoToDTO(usuarioEncontrado);
     }
 
     ;
 
     public void eliminarUsuario(Integer id) {
-        Optional<Usuario> usuarioBuscado = this.usuarioRepositorio.findById(id);
-
+        Optional<Usuario> usuarioBuscado = this.iUsuarioRepositorio.findById(id);
         if ((!usuarioBuscado.isPresent())) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "No se encontro el usuario buscado por el id:" + id + "suministrado"
@@ -87,14 +87,14 @@ public class UsuarioServicio {
 
         Usuario usuarioEncontrado = usuarioBuscado.get();
         try {
-            this.usuarioRepositorio.delete(usuarioEncontrado);
+            this.iUsuarioRepositorio.delete(usuarioEncontrado);
         } catch (Exception error) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al eliminar el usuario");
         }
     }
 
     public UsuarioGenericoDTO actualizarUsuario(Integer id, Usuario datosActualizados) {
-        Optional<Usuario> usuarioBuscado = this.usuarioRepositorio.findById(id);
+        Optional<Usuario> usuarioBuscado = this.iUsuarioRepositorio.findById(id);
         if ((!usuarioBuscado.isPresent())) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "No se encontro el usuario buscado por el id:" + id + "suministrado"
@@ -107,13 +107,14 @@ public class UsuarioServicio {
         usuarioEncontrado.setNombres(datosActualizados.getNombres());
         usuarioEncontrado.setCorreo(datosActualizados.getCorreo());
 
-        Usuario usuarioActualizado = this.usuarioRepositorio.save(usuarioEncontrado);
+        Usuario usuarioActualizado = this.iUsuarioRepositorio.save(usuarioEncontrado);
 
         if (usuarioActualizado == null) {
             throw new ResponseStatusException(
-                    HttpStatus.INTERNAL_SERVER_ERROR, "Error al actualizar el usuario");
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error al actualizar el usuario");
         }
 
-        return this.iUsuarioMapa.convertir_usuario_a_usuariogenericodto(usuarioActualizado);
+        return this.iUsuarioMapa.usuarioGenericoToDTO(usuarioActualizado);
     };
 }

@@ -20,10 +20,10 @@ public interface IUsuarioMapa {
     @Mapping(source = "estado", target = "estado")
     @Mapping(source = "fechaNacimiento", target = "fechaNacimiento")
     @Mapping(source = "documento", target = "documento")
-    UsuarioGenericoDTO convertir_usuario_a_usuariogenericodto(Usuario usuario);
+    UsuarioGenericoDTO usuarioGenericoToDTO(Usuario usuario);
 
     //2. que transforme una list<modelo> en una list<dto>
-    List<UsuarioGenericoDTO> convertir_lista_a_listadtogenerico(List<Usuario> lista);
+    List<UsuarioGenericoDTO> listaUsuarioGenericoToDTO(List<Usuario> lista);
 
 
     //3.
@@ -33,9 +33,9 @@ public interface IUsuarioMapa {
     @Mapping(source = "fechaNacimiento", target = "fechaNacimiento")
     @Mapping(source = "documento", target = "documento")
     @Mapping(source = "contraseña", target = "contraseña")
-    UsuarioEspecialDTO convertir_usuario_a_usuarioespecialdto(Usuario usuario);
+    UsuarioEspecialDTO usuarioEspecialToDTO(Usuario usuario);
 
 
     //4. que transforme una list<modelo> en una list<dto>
-    List<UsuarioEspecialDTO> convertir_lista_a_listadtoespecial(List<Usuario> lista);
+    List<UsuarioEspecialDTO> listaUsuarioEspecialToDTO(List<Usuario> lista);
 }

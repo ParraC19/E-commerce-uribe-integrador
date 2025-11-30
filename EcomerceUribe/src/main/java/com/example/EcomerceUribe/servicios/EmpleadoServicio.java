@@ -16,10 +16,10 @@ import java.util.Optional;
 public class EmpleadoServicio {
 
     @Autowired
-    private IEmpleadoRepositorio empleadoRepositorio;
+    private IEmpleadoRepositorio iEmpleadoRepositorio;
 
     @Autowired
-    private IEmpleadoMapa empleadoMapa;
+    private IEmpleadoMapa iEmpleadoMapa;
 
     public EmpleadoEspecialDTO guardarEmpleado(Empleado datosEmpleado){
 
@@ -35,26 +35,24 @@ public class EmpleadoServicio {
             );
         }
 
-        Empleado empleadoGuardado = this.empleadoRepositorio.save(datosEmpleado);
+        Empleado empleadoGuardado = this.iEmpleadoRepositorio.save(datosEmpleado);
         if(empleadoGuardado==null){
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "Error al guardar el empleado"
             );
         }
 
-        return this.empleadoMapa.empleadoEspecialToDTO(empleadoGuardado);
+        return this.iEmpleadoMapa.empleadoEspecialToDTO(empleadoGuardado);
 
     }
 
-    //Buscar todos los empleados (Lista)
     public List<EmpleadoEspecialDTO> buscarTodosEmpleados(){
-        List<Empleado> empladosConsultados=this.empleadoRepositorio.findAll();
-        return this.empleadoMapa.listaEmpleadoEspecialToDTO(empladosConsultados);
+        List<Empleado> empladosConsultados=this.iEmpleadoRepositorio.findAll();
+        return this.iEmpleadoMapa.listaEmpleadoEspecialToDTO(empladosConsultados);
     }
 
-    //Buscar un empleado por el ID
     public EmpleadoEspecialDTO buscarEmpleadoEspecialId(Integer id){
-        Optional<Empleado> empleadoBuscado=this.empleadoRepositorio.findById(id);
+        Optional<Empleado> empleadoBuscado=this.iEmpleadoRepositorio.findById(id);
         if(!empleadoBuscado.isPresent()){
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
@@ -62,12 +60,11 @@ public class EmpleadoServicio {
             );
         }
         Empleado empleadoEncontrado = empleadoBuscado.get();
-        return this.empleadoMapa.empleadoEspecialToDTO(empleadoEncontrado);
+        return this.iEmpleadoMapa.empleadoEspecialToDTO(empleadoEncontrado);
     }
 
-    //eliminar un empleado
     public void eliminarEmpleado(Integer id){
-        Optional<Empleado> empleadoBuscado=this.empleadoRepositorio.findById(id);
+        Optional<Empleado> empleadoBuscado=this.iEmpleadoRepositorio.findById(id);
         if(!empleadoBuscado.isPresent()){
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
@@ -76,7 +73,7 @@ public class EmpleadoServicio {
         }
         Empleado empleadoEncontrado = empleadoBuscado.get();
         try{
-            this.empleadoRepositorio.delete(empleadoEncontrado);
+            this.iEmpleadoRepositorio.delete(empleadoEncontrado);
         }catch(Exception error){
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR,
@@ -85,9 +82,8 @@ public class EmpleadoServicio {
         }
     }
 
-    // Actualizar un empleado (cargo, salario, sede)
     public EmpleadoEspecialDTO actualizarEmpleado(Integer id, Empleado datosEmpleado) {
-        Optional<Empleado> empleadoBuscado = this.empleadoRepositorio.findById(id);
+        Optional<Empleado> empleadoBuscado = this.iEmpleadoRepositorio.findById(id);
         if (!empleadoBuscado.isPresent()) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
@@ -95,38 +91,29 @@ public class EmpleadoServicio {
             );
         }
 
-        Empleado empleadoExistente = empleadoBuscado.get();
+        Empleado empleadoEncontrado = empleadoBuscado.get();
 
-        //Validación: verificar si el empleado está vinculado a un usuario
-        if (empleadoExistente.getUsuario() == null) {
+        if (empleadoEncontrado.getUsuario() == null) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
                     "El empleado no está vinculado a ningún usuario. No se puede actualizar."
             );
         }
 
-        //actualizar los campos permitidos
-        if (datosEmpleado.getCargo() != null) {
-            empleadoExistente.setCargo(datosEmpleado.getCargo());
-        }
+            empleadoEncontrado.setCargo(datosEmpleado.getCargo());
+            empleadoEncontrado.setSalario(datosEmpleado.getSalario());
+            empleadoEncontrado.setSede(datosEmpleado.getSede());
 
-        if (datosEmpleado.getSalario() != null && datosEmpleado.getSalario() > 0) {
-            empleadoExistente.setSalario(datosEmpleado.getSalario());
-        }
 
-        if (datosEmpleado.getSede() != null) {
-            empleadoExistente.setSede(datosEmpleado.getSede());
-        }
+            Empleado empleadoActualizado = this.iEmpleadoRepositorio.save(empleadoEncontrado);
 
-        try {
-            Empleado empleadoActualizado = this.empleadoRepositorio.save(empleadoExistente);
-            return this.empleadoMapa.empleadoEspecialToDTO(empleadoActualizado);
-        } catch (Exception e) {
+        if (empleadoActualizado == null){
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Error al actualizar el empleado: " + e.getMessage()
+                    "Error al actualizar el empleado con el id: " + id
             );
         }
+        return this.iEmpleadoMapa.empleadoEspecialToDTO(empleadoActualizado);
     }
 
 }

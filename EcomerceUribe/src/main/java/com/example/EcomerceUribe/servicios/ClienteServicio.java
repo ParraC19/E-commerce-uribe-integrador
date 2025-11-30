@@ -16,7 +16,7 @@ import java.util.Optional;
 public class ClienteServicio {
 
     @Autowired
-    private IClienteRepositorio clienteRepositorio;
+    private IClienteRepositorio iClienteRepositorio;
 
     @Autowired
     private IClienteMapa iClienteMapa;
@@ -29,7 +29,7 @@ public class ClienteServicio {
             );
         }
 
-       Cliente clienteGuardado = this.clienteRepositorio.save(datosCliente);
+       Cliente clienteGuardado = this.iClienteRepositorio.save(datosCliente);
         if (clienteGuardado == null){
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "Error al guardar el cliente"
@@ -40,15 +40,13 @@ public class ClienteServicio {
 
     }
 
-    //Buscar todos los clientes (Lista)
     public List<ClienteEspecialDTO> buscarTodosClientes(){
-        List<Cliente> clientesConsultados=this.clienteRepositorio.findAll();
+        List<Cliente> clientesConsultados=this.iClienteRepositorio.findAll();
         return this.iClienteMapa.listaClienteEspecialToDTO(clientesConsultados);
     }
 
-    //Buscar un cliente por el ID
     public ClienteEspecialDTO buscarClienteId(Integer id){
-        Optional<Cliente> clienteBuscado =this.clienteRepositorio.findById(id);
+        Optional<Cliente> clienteBuscado =this.iClienteRepositorio.findById(id);
         if(!clienteBuscado.isPresent()){
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
@@ -59,9 +57,8 @@ public class ClienteServicio {
         return this.iClienteMapa.clienteEspecialToDTO(clienteEncontrado);
     }
 
-    //eliminar un cliente
     public void eliminarCliente(Integer id){
-        Optional<Cliente> clienteBuscado=this.clienteRepositorio.findById(id);
+        Optional<Cliente> clienteBuscado=this.iClienteRepositorio.findById(id);
         if(!clienteBuscado.isPresent()){
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
@@ -70,7 +67,7 @@ public class ClienteServicio {
         }
         Cliente clienteEncontrado = clienteBuscado.get();
         try{
-            this.clienteRepositorio.delete(clienteEncontrado);
+            this.iClienteRepositorio.delete(clienteEncontrado);
         }catch(Exception error){
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR,
@@ -79,11 +76,8 @@ public class ClienteServicio {
         }
     }
 
-    // actualizar un cliente (direccion, calificacion, referenciaPago, departamento, ciudad)
     public ClienteEspecialDTO actualizarCliente(Integer id, Cliente datosCliente) {
-        Optional<Cliente> clienteBuscado = this.clienteRepositorio.findById(id);
-
-        // Validar que el cliente exista
+        Optional<Cliente> clienteBuscado = this.iClienteRepositorio.findById(id);
         if (!clienteBuscado.isPresent()) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
@@ -92,8 +86,6 @@ public class ClienteServicio {
         }
 
         Cliente clienteExistente = clienteBuscado.get();
-
-        // validar si se intenta actualizar con una referencia de pago vacía
         if (datosCliente.getReferenciaPago() != null && datosCliente.getReferenciaPago().isEmpty()) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
@@ -101,36 +93,21 @@ public class ClienteServicio {
             );
         }
 
-        //actualizar solo los campos permitidos
-        if (datosCliente.getDireccion() != null) {
             clienteExistente.setDireccion(datosCliente.getDireccion());
-        }
-
-        if (datosCliente.getCalificacion() != null && datosCliente.getCalificacion() >= 0) {
             clienteExistente.setCalificacion(datosCliente.getCalificacion());
-        }
-
-        if (datosCliente.getReferenciaPago() != null) {
-            clienteExistente.setReferenciaPago(datosCliente.getReferenciaPago());
-        }
-
-        if (datosCliente.getDepartamento() != null) {
-            clienteExistente.setDepartamento(datosCliente.getDepartamento());
-        }
-
-        if (datosCliente.getCiudad() != null) {
             clienteExistente.setCiudad(datosCliente.getCiudad());
-        }
 
-        try {
-            Cliente clienteActualizado = this.clienteRepositorio.save(clienteExistente);
-            return this.iClienteMapa.clienteEspecialToDTO(clienteActualizado);
-        } catch (Exception e) {
+
+
+            Cliente clienteActualizado = this.iClienteRepositorio.save(clienteExistente);
+
+        if (clienteActualizado == null){
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Error al actualizar el cliente: " + e.getMessage()
+                    "Error al actualizar el cliente"
             );
         }
+        return this.iClienteMapa.clienteEspecialToDTO(clienteActualizado);
     }
 
 }
