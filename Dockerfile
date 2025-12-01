@@ -3,7 +3,7 @@ FROM maven:3.9.6-eclipse-temurin-17 AS build
 WORKDIR /app
 
 # Copiamos todo el proyecto
-COPY . .
+COPY EcomerceUribe .
 
 # Compilamos la aplicación
 RUN cd EcomerceUribe && mvn -DskipTests clean package
