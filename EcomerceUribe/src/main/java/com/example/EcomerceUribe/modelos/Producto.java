@@ -28,7 +28,7 @@ public class Producto {
     private Boolean aplicaDescuento;
 
     @ManyToOne
-    @JoinColumn(name = "fk_pedido", referencedColumnName = "id")
+    @JoinColumn(name = "pedido_id")   // FK en la tabla productos
     @JsonBackReference(value = "relacionpedidoproducto")
     private Pedido pedido;
 
